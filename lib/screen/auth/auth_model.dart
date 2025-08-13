@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import '../../entity/user_bd.dart';
 
 class AuthModel extends ChangeNotifier {
   bool login = true;
@@ -67,6 +70,16 @@ class AuthModel extends ChangeNotifier {
       if (user != null) {
         await user.updateDisplayName(name.text);
         await user.reload();
+        final doc = FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid);
+        final currentUser = UserBD(
+          id: user.uid,
+          email: user.email,
+          name: name.text,
+        );
+
+        await doc.set(currentUser.toFirestore());
         if (context != null) {
           Navigator.of(context).pushNamed('/');
         }

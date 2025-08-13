@@ -1,11 +1,15 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:rxdart/rxdart.dart';
 
 import '../../../entity/task.dart';
 
 class ModelTask extends ChangeNotifier {
   int selectedPage = 0;
+
   final db = FirebaseFirestore.instance;
 
   void onSelect(int index) {
@@ -14,7 +18,26 @@ class ModelTask extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addTask(BuildContext context) {
+  Stream<List<Task>> getUserTasks(String userId) {
+    return FirebaseFirestore.instance
+        .collection('users/$userId/userTasks')
+        .snapshots()
+        .switchMap((userTasksSnapshot) {
+          if (userTasksSnapshot.docs.isEmpty) {
+            return Stream.value([]);
+          }
+
+          final taskStreams =
+              userTasksSnapshot.docs.map((doc) {
+                final ref = doc['taskRef'] as DocumentReference;
+                return ref.snapshots().map(Task.fromFirestore);
+              }).toList();
+          print(userTasksSnapshot.docs.length);
+          return CombineLatestStream.list(taskStreams);
+        });
+  }
+
+  void addTask(BuildContext context, String uid) {
     final name = TextEditingController();
     final description = TextEditingController();
     showDialog<String>(
@@ -39,7 +62,8 @@ class ModelTask extends ChangeNotifier {
             actions: [
               TextButton(
                 onPressed:
-                    () => saveNewTask(context, name.text, description.text),
+                    () =>
+                        saveNewTask(context, name.text, description.text, uid),
                 child: const Text('Save'),
               ),
               TextButton(
@@ -58,8 +82,10 @@ class ModelTask extends ChangeNotifier {
     BuildContext context,
     String name,
     String description,
+    String uid,
   ) async {
-    final id = db.collection('tasks').doc().id;
+    final docRef = db.collection('tasks').doc();
+    final id = docRef.id;
     final task =
         Task(
           id: id,
@@ -68,7 +94,13 @@ class ModelTask extends ChangeNotifier {
           description: description,
           status: 'ready',
         ).toFirestore();
-    db.collection('tasks').doc(id).set(task);
+    await docRef.set(task);
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .collection('userTasks')
+        .doc(id)
+        .set({'taskRef': docRef});
     selectedPage = 0;
     Navigator.of(context).pop();
   }
