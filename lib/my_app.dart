@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-import 'app_body.dart';
-import 'models/model_task.dart';
+import 'screen/auth/auth_screen.dart';
+import 'screen/auth/auth_screen_stream.dart';
+import 'screen/auth/login_screen.dart';
+import 'screen/auth/register_screen.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -10,10 +11,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: ChangeNotifierProvider<ModelTask>(
-        create: (BuildContext context) => ModelTask(),
-        child: const AppBody(),
-      ),
+      routes: {
+        '/': (context) => const AuthScreenStream(),
+        '/auth_screen': (context) => const AuthScreen(),
+        '/auth_screen/login': (context) => const LoginScreen(),
+        '/auth_screen/register': (context) => const RegisterScreen(),
+      },
+      initialRoute: '/',
     );
   }
 }

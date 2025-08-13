@@ -15,13 +15,10 @@ class Task {
     required this.status,
   });
 
-  factory Task.fromFirestore(
-    DocumentSnapshot<Map<String, dynamic>> snapshot,
-    SnapshotOptions? options,
-  ) {
+  factory Task.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot) {
     final data = snapshot.data();
     return Task(
-      id: data?['id'],
+      id: snapshot.id,
       createTime: data?['createTime'],
       name: data?['name'],
       description: data?['description'],

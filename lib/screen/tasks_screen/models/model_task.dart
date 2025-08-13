@@ -1,30 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../entity/task.dart';
+import '../../../entity/task.dart';
 
 class ModelTask extends ChangeNotifier {
-  final List<Task> tasks = [];
+  int selectedPage = 0;
   final db = FirebaseFirestore.instance;
-
-  Future<String> initProjects() async {
-    await db
-        .collection("tasks")
-        .withConverter(
-          fromFirestore: Task.fromFirestore,
-          toFirestore: (Task project, _) => project.toFirestore(),
-        )
-        .get()
-        .then((querySnapshot) {
-          for (final docSnapshot in querySnapshot.docs) {
-            tasks.add(docSnapshot.data());
-          }
-        });
-
-    return 'Data Loaded';
-  }
-
-  int selectedPage = 1;
 
   void onSelect(int index) {
     if (selectedPage == index) return;
@@ -56,7 +38,8 @@ class ModelTask extends ChangeNotifier {
             ),
             actions: [
               TextButton(
-                onPressed: () => saveNewTask(context),
+                onPressed:
+                    () => saveNewTask(context, name.text, description.text),
                 child: const Text('Save'),
               ),
               TextButton(
@@ -70,6 +53,39 @@ class ModelTask extends ChangeNotifier {
     );
   }
 
-  /// Сохранить новый проект в БД.
-  void saveNewTask(BuildContext context) async {}
+  //Сохранить новый проект в БД.
+  void saveNewTask(
+    BuildContext context,
+    String name,
+    String description,
+  ) async {
+    final id = db.collection('tasks').doc().id;
+    final task =
+        Task(
+          id: id,
+          createTime: DateTime.now().toString(),
+          name: name,
+          description: description,
+          status: 'ready',
+        ).toFirestore();
+    db.collection('tasks').doc(id).set(task);
+    selectedPage = 0;
+    Navigator.of(context).pop();
   }
+
+  void deleteTask(String idDoc) {
+    db.collection('tasks').doc(idDoc).update({'status': 'delete'});
+  }
+
+  void doneTask(String idDoc) {
+    db.collection('tasks').doc(idDoc).update({'status': 'done'});
+  }
+
+  void closeTask(String idDoc) {
+    db.collection('tasks').doc(idDoc).update({'status': 'close'});
+  }
+
+  Future<void> signOut() async {
+    await FirebaseAuth.instance.signOut();
+  }
+}
