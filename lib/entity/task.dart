@@ -6,6 +6,8 @@ class Task {
   final String name;
   final String description;
   final String status;
+  final String author;
+  final String responsible;
 
   const Task({
     required this.id,
@@ -13,6 +15,8 @@ class Task {
     required this.name,
     required this.description,
     required this.status,
+    required this.author,
+    required this.responsible,
   });
 
   factory Task.fromFirestore(DocumentSnapshot doc) {
@@ -23,6 +27,8 @@ class Task {
       name: data['name'],
       description: data['description'],
       status: data['status'],
+      author: data['author'],
+      responsible: data['responsible'],
     );
   }
 
@@ -33,6 +39,8 @@ class Task {
       "name": name,
       "description": description,
       "status": status,
+      "author": author,
+      "responsible": responsible,
     };
   }
 }

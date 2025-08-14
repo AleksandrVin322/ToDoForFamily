@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'auth_model.dart';
+import 'model/model_auth.dart';
 
 class RegisterScreen extends StatelessWidget {
   const RegisterScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: ChangeNotifierProvider(
-          create: (BuildContext context) => AuthModel(),
-          child: const DecoratedBox(
+    return ChangeNotifierProvider<ModelAuth>(
+      create: (BuildContext context) => ModelAuth(),
+      child: const SafeArea(
+        child: Scaffold(
+          body: DecoratedBox(
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Color(0xFF0077B6), // Темно-голубой
-                  Color(0xFF00B4D8), // Бирюзовый
-                  Color(0xFF90E0EF), // Светло-бирюзовый
+                  Color(0xFF0077B6),
+                  Color(0xFF00B4D8),
+                  Color(0xFF90E0EF),
                 ],
                 stops: [0.0, 0.5, 1.0],
                 begin: Alignment.topLeft,
@@ -44,7 +44,7 @@ class BodyRegisterScreen extends StatelessWidget {
       fillColor: Colors.white,
     );
 
-    final AuthModel model = context.watch<AuthModel>();
+    final ModelAuth model = context.watch<ModelAuth>();
     return AbsorbPointer(
       absorbing: model.absorbing,
       child: Column(
@@ -68,17 +68,17 @@ class BodyRegisterScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  (model.registerDone.isNotEmpty)
-                      ? Center(
-                        child: Text(
-                          model.registerDone,
-                          style: const TextStyle(
-                            color: Color.fromARGB(255, 8, 104, 13),
-                            fontSize: 50,
+                  (model.isRegister)
+                      ? const Center(
+                          child: Text(
+                            'Успешная регистрация',
+                            style: TextStyle(
+                              color: Color.fromARGB(255, 8, 104, 13),
+                              fontSize: 50,
+                            ),
+                            textAlign: TextAlign.center,
                           ),
-                          textAlign: TextAlign.center,
-                        ),
-                      )
+                        )
                       : const SizedBox.shrink(),
                   const LoginTextStyle(text: 'Почта'),
                   const SizedBox(height: 10),
@@ -93,11 +93,12 @@ class BodyRegisterScreen extends StatelessWidget {
                     controller: model.password,
                     decoration: textFieldDecoration,
                   ),
-                  (model.textError.isNotEmpty)
+                  (model.errorText.isNotEmpty)
                       ? Text(
-                        model.textError,
-                        style: const TextStyle(color: Colors.red, fontSize: 20),
-                      )
+                          model.errorText,
+                          style:
+                              const TextStyle(color: Colors.red, fontSize: 20),
+                        )
                       : const SizedBox.shrink(),
                   const SizedBox(height: 10),
                   SizedBox(
@@ -124,8 +125,6 @@ class BodyRegisterScreen extends StatelessWidget {
                       ),
                       onPressed: () {
                         model.register(
-                          email: model.email.text,
-                          password: model.password.text,
                           context: context,
                         );
                       },
@@ -147,13 +146,19 @@ class BodyRegisterScreen extends StatelessWidget {
 
 class LoginTextStyle extends StatelessWidget {
   final String text;
-  const LoginTextStyle({required this.text, super.key});
+  const LoginTextStyle({
+    required this.text,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Text(
       text,
-      style: const TextStyle(fontSize: 30, color: Colors.white),
+      style: const TextStyle(
+        fontSize: 30,
+        color: Colors.white,
+      ),
     );
   }
 }

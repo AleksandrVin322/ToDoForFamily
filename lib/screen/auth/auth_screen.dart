@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../domain/main_navigation.dart';
+
 class AuthScreen extends StatelessWidget {
   const AuthScreen({super.key});
 
@@ -9,7 +11,11 @@ class AuthScreen extends StatelessWidget {
       body: DecoratedBox(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF0077B6), Color(0xFF00B4D8), Color(0xFF90E0EF)],
+            colors: [
+              Color(0xFF0077B6),
+              Color(0xFF00B4D8),
+              Color(0xFF90E0EF),
+            ],
             stops: [0.0, 0.5, 1.0],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -21,16 +27,15 @@ class AuthScreen extends StatelessWidget {
             children: [
               _Buttons(
                 text: 'Войти',
-                func:
-                    () => Navigator.of(context).pushNamed('/auth_screen/login'),
+                func: () => Navigator.of(context)
+                    .pushNamed(NavigationRoutes.loginScreen),
               ),
               const SizedBox(height: 10),
               _Buttons(
                 text: 'Регистрация',
-                func:
-                    () => Navigator.of(
-                      context,
-                    ).pushNamed('/auth_screen/register'),
+                func: () => Navigator.of(
+                  context,
+                ).pushNamed(NavigationRoutes.registerScreen),
               ),
             ],
           ),
@@ -42,8 +47,12 @@ class AuthScreen extends StatelessWidget {
 
 class _Buttons extends StatelessWidget {
   final String text;
-  final Function()? func;
-  const _Buttons({required this.text, required this.func, super.key});
+  final void Function()? func;
+  const _Buttons({
+    required this.text,
+    required this.func,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

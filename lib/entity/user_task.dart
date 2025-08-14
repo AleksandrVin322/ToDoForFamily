@@ -1,15 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class UserTask {
+class UserTasks {
   final DocumentReference? taskRef;
 
-  const UserTask({required this.taskRef});
+  const UserTasks({required this.taskRef});
 
-  factory UserTask.fromFirestore(
+  factory UserTasks.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
   ) {
     final data = snapshot.data();
-    return UserTask(taskRef: data?['taskRef']);
+    return UserTasks(taskRef: data?['taskRef']);
   }
 
   Map<String, dynamic> toFirestore() {

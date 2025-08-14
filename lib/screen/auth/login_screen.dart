@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'auth_model.dart';
+import 'model/model_auth.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: ChangeNotifierProvider(
-          create: (BuildContext context) => AuthModel(),
-          child: const DecoratedBox(
+    return ChangeNotifierProvider(
+      create: (BuildContext context) => ModelAuth(),
+      child: const SafeArea(
+        child: Scaffold(
+          body: DecoratedBox(
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Color(0xFF0077B6), // Темно-голубой
-                  Color(0xFF00B4D8), // Бирюзовый
-                  Color(0xFF90E0EF), // Светло-бирюзовый
+                  Color(0xFF0077B6),
+                  Color(0xFF00B4D8),
+                  Color(0xFF90E0EF),
                 ],
                 stops: [0.0, 0.5, 1.0],
                 begin: Alignment.topLeft,
@@ -44,7 +44,7 @@ class BodyLoginScreen extends StatelessWidget {
       fillColor: Colors.white,
     );
 
-    final AuthModel model = context.watch<AuthModel>();
+    final ModelAuth model = context.watch<ModelAuth>();
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -52,7 +52,11 @@ class BodyLoginScreen extends StatelessWidget {
           children: [
             IconButton(
               onPressed: Navigator.of(context).pop,
-              icon: const Icon(Icons.arrow_back, color: Colors.black, size: 40),
+              icon: const Icon(
+                Icons.arrow_back,
+                color: Colors.black,
+                size: 40,
+              ),
             ),
           ],
         ),
@@ -75,11 +79,11 @@ class BodyLoginScreen extends StatelessWidget {
                   controller: model.password,
                   decoration: textFieldDecoration,
                 ),
-                (model.textError.isNotEmpty)
+                (model.errorText.isNotEmpty)
                     ? Text(
-                      model.textError,
-                      style: const TextStyle(color: Colors.red, fontSize: 20),
-                    )
+                        model.errorText,
+                        style: const TextStyle(color: Colors.red, fontSize: 20),
+                      )
                     : const SizedBox.shrink(),
                 const SizedBox(height: 10),
                 SizedBox(
@@ -106,12 +110,13 @@ class BodyLoginScreen extends StatelessWidget {
                     ),
                     onPressed: () {
                       model.loginAcc(
-                        email: model.email.text,
-                        password: model.password.text,
                         context: context,
                       );
                     },
-                    child: const Text('Войти', style: TextStyle(fontSize: 30)),
+                    child: const Text(
+                      'Войти',
+                      style: TextStyle(fontSize: 30),
+                    ),
                   ),
                 ),
               ],
@@ -125,13 +130,19 @@ class BodyLoginScreen extends StatelessWidget {
 
 class LoginTextStyle extends StatelessWidget {
   final String text;
-  const LoginTextStyle({required this.text, super.key});
+  const LoginTextStyle({
+    required this.text,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Text(
       text,
-      style: const TextStyle(fontSize: 30, color: Colors.white),
+      style: const TextStyle(
+        fontSize: 30,
+        color: Colors.white,
+      ),
     );
   }
 }

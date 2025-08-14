@@ -3,45 +3,60 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../entity/task.dart';
+import '../auth/model/model_auth.dart';
 import 'models/model_task.dart';
-import 'tasks.dart';
+import 'tasks_with_status.dart';
 
-class TasksBody extends StatelessWidget {
+class TasksBody extends StatefulWidget {
   final User user;
-  const TasksBody({required this.user, super.key});
+  const TasksBody({
+    required this.user,
+    super.key,
+  });
+
+  @override
+  State<TasksBody> createState() => _TasksBodyState();
+}
+
+class _TasksBodyState extends State<TasksBody> {
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<ModelTask>(context, listen: false)
+        .initTasksStream(widget.user.uid);
+  }
 
   @override
   Widget build(BuildContext context) {
-    final ModelTask model = context.watch<ModelTask>();
+    final ModelTask modelTask = context.watch<ModelTask>();
 
     return Scaffold(
       body: StreamBuilder<List<Task>>(
-        stream: model.getUserTasks(user.uid),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
+        stream: modelTask.getUserTasks(widget.user.uid),
+        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           if (snapshot.hasData) {
-            final tasks = snapshot.data ?? [];
             return Scaffold(
               floatingActionButton: FloatingActionButton(
-                onPressed: () => model.addTask(context, user.uid),
-                backgroundColor: Colors.blue,
+                onPressed: () => modelTask.addTask(context, widget.user),
+                backgroundColor: const Color.fromRGBO(175, 195, 211, 1),
                 child: const Icon(Icons.add, color: Colors.black),
               ),
               appBar: AppBar(
                 automaticallyImplyLeading: false,
                 title: Row(
                   children: [
-                    Expanded(child: Text(user?.displayName ?? '')),
-                    IconButton(
-                      onPressed: model.signOut,
-                      icon: const Icon(Icons.logout),
-                    ),
+                    Expanded(child: Text(widget.user.displayName ?? '')),
+                    ChangeNotifierProvider(
+                      create: (BuildContext context) => ModelAuth(),
+                      child: MyIconButton(),
+                    )
                   ],
                 ),
                 backgroundColor: Colors.blue,
               ),
               bottomNavigationBar: BottomNavigationBar(
-                currentIndex: model.selectedPage,
-                onTap: model.onSelect,
+                currentIndex: modelTask.selectedPage,
+                onTap: modelTask.onSelect,
                 backgroundColor: Colors.blue,
                 selectedItemColor: Colors.white,
                 unselectedItemColor: Colors.black,
@@ -61,18 +76,33 @@ class TasksBody extends StatelessWidget {
                 ],
               ),
               body: IndexedStack(
-                index: model.selectedPage,
-                children: <Tasks>[
-                  Tasks(status: 'ready', tasks: tasks),
-                  Tasks(status: 'done', tasks: tasks),
-                  Tasks(status: 'close', tasks: tasks),
+                index: modelTask.selectedPage,
+                children: const <TasksWithStatus>[
+                  TasksWithStatus(status: 'ready'),
+                  TasksWithStatus(status: 'done'),
+                  TasksWithStatus(status: 'close'),
                 ],
               ),
             );
           }
-          return const CircularProgressIndicator();
+          return const Center(child: CircularProgressIndicator());
         },
       ),
+    );
+  }
+}
+
+class MyIconButton extends StatelessWidget {
+  const MyIconButton({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final ModelAuth modelAuth = context.read<ModelAuth>();
+    return IconButton(
+      onPressed: modelAuth.signOut,
+      icon: const Icon(Icons.logout),
     );
   }
 }
