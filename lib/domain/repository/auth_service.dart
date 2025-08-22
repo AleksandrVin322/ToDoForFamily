@@ -1,18 +1,22 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import '../../entity/user_bd.dart';
-
 class AuthService {
-  Future<void> register({
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
+  Future<User?> register({
+    required String userName,
     required String email,
     required String password,
   }) async {
     try {
-      final UserCredential userCredential = await FirebaseAuth.instance
+      final UserCredential userCredential = await _firebaseAuth
           .createUserWithEmailAndPassword(email: email, password: password);
-      await userCredential.user?.sendEmailVerification();
-      await FirebaseAuth.instance.signOut();
+      final user = userCredential.user;
+      if (user != null) {
+        user.updateDisplayName(userName);
+        await user.reload();
+        return user;
+      }
     } on FirebaseAuthException catch (_) {
       rethrow;
     } catch (error) {
@@ -20,39 +24,16 @@ class AuthService {
     }
   }
 
-  Future<void> login({
+  Future<User?> login({
     required String email,
     required String password,
   }) async {
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      final userCredential = await _firebaseAuth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-    } on FirebaseAuthException catch (_) {
-      rethrow;
-    } catch (error) {
-      throw FirebaseAuthException(code: 'unknown', message: 'unknown');
-    }
-  }
-
-  Future<void> saveUser({
-    required String name,
-  }) async {
-    try {
-      final User? currentUser = FirebaseAuth.instance.currentUser;
-      if (currentUser != null) {
-        await currentUser.updateDisplayName(name);
-        await currentUser.reload();
-        final doc =
-            FirebaseFirestore.instance.collection('users').doc(currentUser.uid);
-        final userBD = UserBD(
-          id: currentUser.uid,
-          email: currentUser.email,
-          name: name,
-        );
-        await doc.set(userBD.toFirestore());
-      }
+      return userCredential.user;
     } on FirebaseAuthException catch (_) {
       rethrow;
     } catch (error) {
@@ -62,11 +43,15 @@ class AuthService {
 
   Future<void> signOut() async {
     try {
-      await FirebaseAuth.instance.signOut();
+      await _firebaseAuth.signOut();
     } on FirebaseAuthException catch (_) {
       rethrow;
     } catch (error) {
       throw FirebaseAuthException(code: 'unknown', message: 'unknown');
     }
   }
+
+  Stream<User?> get authStateChanges => _firebaseAuth.authStateChanges();
+
+  User? get currentUser => _firebaseAuth.currentUser;
 }

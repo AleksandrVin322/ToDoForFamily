@@ -1,52 +1,64 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../tasks_screen/models/model_task.dart';
-import '../tasks_screen/tasks_body.dart';
-import 'auth_screen.dart';
-import 'model/model_auth.dart';
-import 'welcome_screen.dart';
+import '../../domain/repository/auth_service.dart';
+import '../../domain/repository/firestore_service.dart';
+import '../main_screen/main_screen.dart';
+import 'bloc/auth_bloc_bloc.dart';
+import 'login_page.dart';
 
-class AuthStateStream extends StatefulWidget {
+class AuthStateStream extends StatelessWidget {
   const AuthStateStream({super.key});
 
   @override
-  State<AuthStateStream> createState() => _AuthStateStreamState();
+  Widget build(BuildContext context) {
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider(
+          create: (context) => AuthService(),
+        ),
+        RepositoryProvider(create: (context) => FirestoreService()),
+      ],
+      child: BlocProvider(
+        create: (context) => AuthBloc(
+            authService: context.read<AuthService>(),
+            firestoreService: context.read<FirestoreService>()),
+        child: BlocBuilder<AuthBloc, AuthState>(
+          builder: (context, state) {
+            if (state is Unauthenticated) {
+              return const LoginPage();
+            } else if (state is AuthenticatedState) {
+              return const MainScreen();
+            } else {
+              return const _LoadingWidget();
+            }
+          },
+        ),
+      ),
+    );
+  }
 }
 
-class _AuthStateStreamState extends State<AuthStateStream> {
-  final Stream<User?> authStateChanges =
-      FirebaseAuth.instance.authStateChanges();
+class _LoadingWidget extends StatelessWidget {
+  const _LoadingWidget({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<User?>(
-      stream: authStateChanges,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.active) {
-          final User? user = snapshot.data;
-          if (user == null) {
-            return ChangeNotifierProvider<ModelAuth>(
-              create: (BuildContext context) => ModelAuth(),
-              child: const AuthScreen(),
-            );
-          } else {
-            if (user.displayName != null && user.displayName!.isNotEmpty) {
-              return ChangeNotifierProvider<ModelTask>(
-                create: (BuildContext context) => ModelTask(),
-                child: TasksBody(user: user),
-              );
-            } else {
-              return ChangeNotifierProvider<ModelAuth>(
-                create: (BuildContext context) => ModelAuth(),
-                child: const WelcomeScreen(),
-              );
-            }
-          }
-        }
-        return const Center(child: CircularProgressIndicator());
-      },
+    return const Scaffold(
+      body: Center(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Загрузка...',
+              style: TextStyle(fontSize: 50),
+            ),
+            CircularProgressIndicator(),
+          ],
+        ),
+      ),
     );
   }
 }

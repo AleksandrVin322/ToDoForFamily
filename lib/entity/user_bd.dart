@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserBD {
-  final String? id;
-  final String? email;
-  final String? name;
+  final String id;
+  final String email;
+  final String name;
 
   const UserBD({required this.id, required this.email, required this.name});
 
@@ -17,9 +17,9 @@ class UserBD {
 
   Map<String, dynamic> toFirestore() {
     return {
-      if (id != null) "id": id,
-      if (email != null) "email": email,
-      if (name != null) "name": name,
+      "id": id,
+      "email": email,
+      "name": name,
     };
   }
 
