@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'bloc/auth_bloc_bloc.dart';
+import 'bloc/auth_bloc.dart';
 import 'widgets/style/style_email_text_field.dart';
 import 'widgets/style/style_text_button.dart';
 

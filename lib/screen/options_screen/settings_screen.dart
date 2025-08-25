@@ -277,7 +277,7 @@ void _deleteAcc(BuildContext context, SettingsState state) async {
   showDialog<String>(
     context: context,
     builder: (BuildContext context) => AlertDialog(
-      title: const Center(child: Text('Создание задачи')),
+      title: const Center(child: Text('Подтвердите старый пароль')),
       content: TextField(
         decoration: inputDecoration,
         controller: passwordController,
@@ -289,7 +289,7 @@ void _deleteAcc(BuildContext context, SettingsState state) async {
             IconButton(
               onPressed: () {
                 bloc.add(DeleteUserEvent(oldPassword: passwordController.text));
-                Navigator.of(context).pop();
+                Navigator.of(context).pushNamed('/');
               },
               icon: const Icon(
                 Icons.done,

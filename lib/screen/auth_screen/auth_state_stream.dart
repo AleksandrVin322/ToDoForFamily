@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/repository/auth_service.dart';
 import '../../domain/repository/firestore_service.dart';
 import '../main_screen/main_screen.dart';
-import 'bloc/auth_bloc_bloc.dart';
+import 'bloc/auth_bloc.dart';
 import 'login_page.dart';
 
 class AuthStateStream extends StatelessWidget {

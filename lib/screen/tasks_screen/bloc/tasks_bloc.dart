@@ -120,10 +120,15 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
     AddTaskEvent event,
     Emitter<TasksState> emit,
   ) async {
+    final name =
+        (event.name.trim().isNotEmpty) ? event.name.trim() : 'Без названия';
+    final description = (event.description.trim().isNotEmpty)
+        ? event.description.trim()
+        : 'Без описания';
     try {
       await firestoreService.addTask(
-        name: event.name,
-        description: event.description,
+        name: name,
+        description: description,
         author: event.author,
         responsibleID: event.responsibleID,
       );

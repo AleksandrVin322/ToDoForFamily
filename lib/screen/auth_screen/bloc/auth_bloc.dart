@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 import '../../../domain/repository/auth_service.dart';
 import '../../../domain/repository/firestore_service.dart';
 
-part 'auth_bloc_event.dart';
-part 'auth_bloc_state.dart';
+part 'auth_event.dart';
+part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthService authService;
@@ -103,8 +103,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     );
     try {
       if (event.password == event.checkPassword) {
+        final userName = (event.userName.trim().isNotEmpty)
+            ? event.userName.trim()
+            : 'Anonymous';
         final user = await authService.register(
-          userName: event.userName,
+          userName: userName,
           email: event.email,
           password: event.password,
         );
@@ -154,11 +157,3 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 }
-
-  // Future<void> _onLogout(LogoutEvent event, Emitter<AuthState> emit) async {
-  //   await authService.signOut();
-  //   emit(AuthInitial());
-  // }
-
-
-

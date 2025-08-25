@@ -17,7 +17,7 @@ class StyleTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 50),
-      child: TextField(
+      child: TextFormField(
         controller: controller,
         obscureText: isPassword,
         decoration: InputDecoration(
@@ -26,6 +26,15 @@ class StyleTextField extends StatelessWidget {
           focusedBorder: const OutlineInputBorder(),
           prefixIcon: icon,
         ),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Поле не может быть пустым';
+          }
+          if (value.length < 10) {
+            return 'Пароль должен быть больше 10 символов';
+          }
+          return null;
+        },
       ),
     );
   }

@@ -34,11 +34,12 @@ class AuthService {
       () async {
         final UserCredential userCredential = await _firebaseAuth
             .createUserWithEmailAndPassword(email: email, password: password);
-        await userCredential.user!.sendEmailVerification();
-        final user = userCredential.user;
+        User? user = userCredential.user;
         if (user != null) {
           await user.updateDisplayName(userName);
           await user.reload();
+          user = _firebaseAuth.currentUser;
+          await userCredential.user!.sendEmailVerification();
           return user;
         }
       },
@@ -117,6 +118,13 @@ class AuthService {
     return _errorHandle(() async {
       await _firebaseAuth.sendPasswordResetEmail(email: email);
     });
+  }
+
+  Future<void> sendVerificationEmail() async {
+    final user = _firebaseAuth.currentUser;
+    if (user != null) {
+      await user.sendEmailVerification();
+    }
   }
 
   Stream<User?> get authStateChanges => _firebaseAuth.authStateChanges();
