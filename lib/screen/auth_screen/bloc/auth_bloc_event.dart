@@ -31,4 +31,10 @@ class RegisterEvent extends AuthEvent {
   });
 }
 
+class ResetPasswordEvent extends AuthEvent {
+  final String email;
+
+  ResetPasswordEvent({required this.email});
+}
+
 class LoadingFailureEvent extends AuthEvent {}

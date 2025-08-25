@@ -34,7 +34,7 @@ class LoginPage extends StatelessWidget {
         child: Center(
           child: BlocBuilder<AuthBloc, AuthState>(
             builder: (context, state) {
-              if (state is Unauthenticated) {
+              if (state is UnauthenticatedState) {
                 return state.isLogin
                     ? const _ColumnLogin()
                     : const _ColumnRegister();

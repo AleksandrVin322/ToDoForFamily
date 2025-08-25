@@ -11,16 +11,18 @@ class AuthenticatedState extends AuthState {
   AuthenticatedState({required this.user});
 }
 
-class Unauthenticated extends AuthState {
+class UnauthenticatedState extends AuthState {
   final bool isLogin;
   final String errorMessage;
   final bool isLoading;
 
-  Unauthenticated({
+  UnauthenticatedState({
     this.isLogin = true,
     this.errorMessage = '',
     this.isLoading = false,
   });
 }
+
+class ResetPasswordState extends AuthState {}
 
 class LoadingState extends AuthState {}

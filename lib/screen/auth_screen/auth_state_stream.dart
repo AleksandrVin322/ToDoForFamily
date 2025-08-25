@@ -25,7 +25,7 @@ class AuthStateStream extends StatelessWidget {
             firestoreService: context.read<FirestoreService>()),
         child: BlocBuilder<AuthBloc, AuthState>(
           builder: (context, state) {
-            if (state is Unauthenticated) {
+            if (state is UnauthenticatedState) {
               return const LoginPage();
             } else if (state is AuthenticatedState) {
               return const MainScreen();

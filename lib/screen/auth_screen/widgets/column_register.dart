@@ -28,7 +28,7 @@ class _ColumnRegisterState extends State<_ColumnRegister> {
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
-        if (state is Unauthenticated) {
+        if (state is UnauthenticatedState) {
           if (state.errorMessage.isNotEmpty) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -42,7 +42,7 @@ class _ColumnRegisterState extends State<_ColumnRegister> {
       },
       child: BlocBuilder<AuthBloc, AuthState>(
         builder: (context, state) {
-          if (state is Unauthenticated) {
+          if (state is UnauthenticatedState) {
             return SafeArea(
               child: SingleChildScrollView(
                 child: Column(

@@ -39,16 +39,14 @@ class MainScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 100),
-              const _StyleTextButton(
+              _StyleTextButton(
                 text: 'Задачи для меня',
+                function: () => Navigator.of(context).pushNamed('/Tasks'),
               ),
               const SizedBox(height: 20),
-              const _StyleTextButton(
-                text: 'Задачи от меня',
-              ),
-              const SizedBox(height: 20),
-              const _StyleTextButton(
+              _StyleTextButton(
                 text: 'Настройки профиля',
+                function: () => Navigator.of(context).pushNamed('/options'),
               ),
               const SizedBox(height: 20),
               TextButton(
@@ -65,8 +63,10 @@ class MainScreen extends StatelessWidget {
 
 class _StyleTextButton extends StatelessWidget {
   final String text;
+  final Function()? function;
   const _StyleTextButton({
     required this.text,
+    required this.function,
     super.key,
   });
 
@@ -95,7 +95,7 @@ class _StyleTextButton extends StatelessWidget {
       width: 350,
       child: TextButton(
         style: buttonStyle,
-        onPressed: () => Navigator.of(context).pushNamed('/Tasks'),
+        onPressed: function, // () => Navigator.of(context).pushNamed('/Tasks'),
         child: Text(
           text,
           style: const TextStyle(fontSize: 30),

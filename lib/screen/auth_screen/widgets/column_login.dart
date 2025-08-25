@@ -24,7 +24,7 @@ class _ColumnLoginState extends State<_ColumnLogin> {
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
-        if (state is Unauthenticated) {
+        if (state is UnauthenticatedState) {
           if (state.errorMessage.isNotEmpty) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -38,7 +38,7 @@ class _ColumnLoginState extends State<_ColumnLogin> {
       },
       child: BlocBuilder<AuthBloc, AuthState>(
         builder: (context, state) {
-          if (state is Unauthenticated) {
+          if (state is UnauthenticatedState) {
             return SafeArea(
               child: SingleChildScrollView(
                 child: Column(
@@ -89,6 +89,13 @@ class _ColumnLoginState extends State<_ColumnLogin> {
                               .add(RegisterColumnEvent())
                           : null,
                     ),
+                    const SizedBox(height: 10),
+                    StyleTextButton(
+                      text: 'Сбросить пароль',
+                      function: !state.isLoading
+                          ? () => _resetPassword(context)
+                          : null,
+                    ),
                   ],
                 ),
               ),
@@ -100,4 +107,42 @@ class _ColumnLoginState extends State<_ColumnLogin> {
       ),
     );
   }
+}
+
+void _resetPassword(BuildContext context) async {
+  final emailController = TextEditingController();
+  final bloc = context.read<AuthBloc>();
+  showDialog<String>(
+    context: context,
+    builder: (BuildContext context) => AlertDialog(
+      title: const Center(child: Text('Сброс пароля')),
+      content: TextField(
+        controller: emailController,
+        decoration: const InputDecoration(
+          hintText: 'Укажите почту для сброса',
+          border: OutlineInputBorder(),
+        ),
+      ),
+      actions: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            IconButton(
+              onPressed: () {
+                bloc.add(
+                  ResetPasswordEvent(email: emailController.text),
+                );
+                Navigator.of(context).pop();
+              },
+              icon: const Icon(Icons.done),
+            ),
+            IconButton(
+              onPressed: () => Navigator.of(context).pop(),
+              icon: const Icon(Icons.close),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
 }

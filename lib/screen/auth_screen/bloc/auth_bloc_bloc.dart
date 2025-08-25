@@ -24,6 +24,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<RegisterColumnEvent>(_registerColumn);
     on<LoginEvent>(_onLogin);
     on<RegisterEvent>(_onRegister);
+    on<ResetPasswordEvent>(_resetPassword);
 
     add(CheckAuthEvent());
     _authSubscription = authService.authStateChanges.listen((user) {
@@ -39,7 +40,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     if (user != null) {
       emit(AuthenticatedState(user: user));
     } else {
-      emit(Unauthenticated());
+      emit(UnauthenticatedState());
     }
   }
 
@@ -47,14 +48,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     LoginColumnEvent event,
     Emitter<AuthState> emit,
   ) {
-    emit(Unauthenticated());
+    emit(UnauthenticatedState());
   }
 
   void _registerColumn(
     RegisterColumnEvent event,
     Emitter<AuthState> emit,
   ) {
-    emit(Unauthenticated(isLogin: false));
+    emit(UnauthenticatedState(isLogin: false));
   }
 
   @override
@@ -68,7 +69,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     try {
-      emit(Unauthenticated(isLoading: true));
+      emit(UnauthenticatedState(isLoading: true));
 
       final user = await authService.login(
         email: event.email,
@@ -77,22 +78,25 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (user != null) {
         emit(AuthenticatedState(user: user));
       } else {
-        emit(Unauthenticated(errorMessage: 'Пользователь не найден'));
+        emit(UnauthenticatedState(errorMessage: 'Пользователь не найден'));
       }
     } on FirebaseAuthException catch (error) {
       emit(
-        Unauthenticated(errorMessage: error.message!),
+        UnauthenticatedState(errorMessage: error.message!),
       );
     } catch (_) {
       emit(
-        Unauthenticated(errorMessage: 'Ошибка. Попробуйте позже'),
+        UnauthenticatedState(errorMessage: 'Ошибка. Попробуйте позже'),
       );
     }
   }
 
-  Future<void> _onRegister(RegisterEvent event, Emitter<AuthState> emit) async {
+  Future<void> _onRegister(
+    RegisterEvent event,
+    Emitter<AuthState> emit,
+  ) async {
     emit(
-      Unauthenticated(
+      UnauthenticatedState(
         isLoading: true,
         isLogin: false,
       ),
@@ -111,7 +115,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           emit(AuthenticatedState(user: user));
         } else {
           emit(
-            Unauthenticated(
+            UnauthenticatedState(
               errorMessage: 'Пользователь не найден',
               isLogin: false,
             ),
@@ -119,7 +123,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         }
       } else {
         emit(
-          Unauthenticated(
+          UnauthenticatedState(
             errorMessage: 'Пароли не совпадают',
             isLogin: false,
           ),
@@ -127,9 +131,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     } on FirebaseAuthException catch (error) {
       emit(
-        Unauthenticated(
+        UnauthenticatedState(
           errorMessage: error.message!,
           isLogin: false,
+        ),
+      );
+    }
+  }
+
+  void _resetPassword(
+    ResetPasswordEvent event,
+    Emitter<AuthState> emit,
+  ) async {
+    try {
+      await authService.resetPassword(email: event.email);
+    } on FirebaseAuthException catch (error) {
+      emit(
+        UnauthenticatedState(
+          errorMessage: error.message!,
         ),
       );
     }

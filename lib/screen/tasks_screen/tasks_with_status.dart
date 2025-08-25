@@ -28,6 +28,7 @@ class TasksWithStatus extends StatelessWidget {
     } else {
       return GridView.count(
         crossAxisCount: 2,
+        childAspectRatio: 0.6,
         children: List.generate(filteredTask.length, (index) {
           return Padding(
             padding: const EdgeInsetsGeometry.all(5),
