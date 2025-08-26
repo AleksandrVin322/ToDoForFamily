@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class StyleTextField extends StatelessWidget {
+class TextFieldStyle extends StatelessWidget {
   final String hintText;
   final Icon icon;
   final bool isPassword;
   final TextEditingController controller;
-  const StyleTextField({
+  const TextFieldStyle({
     required this.icon,
     required this.hintText,
     required this.isPassword,
@@ -17,7 +17,7 @@ class StyleTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 50),
-      child: TextFormField(
+      child: TextField(
         controller: controller,
         obscureText: isPassword,
         decoration: InputDecoration(
@@ -26,15 +26,6 @@ class StyleTextField extends StatelessWidget {
           focusedBorder: const OutlineInputBorder(),
           prefixIcon: icon,
         ),
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Поле не может быть пустым';
-          }
-          if (value.length < 10) {
-            return 'Пароль должен быть больше 10 символов';
-          }
-          return null;
-        },
       ),
     );
   }

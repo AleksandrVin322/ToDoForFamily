@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-class StyleTextButton extends StatelessWidget {
+class TextButtonStyle extends StatelessWidget {
   final String text;
-  final Function()? function;
-  const StyleTextButton({
+  final void Function()? function;
+  const TextButtonStyle({
     required this.text,
     required this.function,
     super.key,
@@ -30,15 +30,12 @@ class StyleTextButton extends StatelessWidget {
         vertical: 12,
       ),
     );
-    return SizedBox(
-      width: 300,
-      child: TextButton(
-        style: buttonStyle,
-        onPressed: function,
-        child: Text(
-          text,
-          style: const TextStyle(fontSize: 20),
-        ),
+    return TextButton(
+      style: buttonStyle,
+      onPressed: function,
+      child: Text(
+        text,
+        style: const TextStyle(fontSize: 20),
       ),
     );
   }
