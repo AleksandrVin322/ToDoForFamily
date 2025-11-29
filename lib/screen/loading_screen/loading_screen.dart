@@ -8,9 +8,10 @@ class LoadingScreen extends StatelessWidget {
     return const Scaffold(
       body: Center(
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Загрузка...',
+              'Загрузка...  ',
               style: TextStyle(fontSize: 40),
             ),
             CircularProgressIndicator(),

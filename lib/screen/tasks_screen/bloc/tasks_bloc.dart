@@ -5,8 +5,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
-import '../../../domain/repository/auth_service.dart';
-import '../../../domain/repository/firestore_service.dart';
+import '../../../domain/service/auth_service.dart';
+import '../../../domain/service/firestore_service.dart';
+import '../../../entity/family.dart';
 import '../../../entity/task.dart';
 import '../../../entity/user_bd.dart';
 
@@ -60,7 +61,10 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
     Emitter<TasksState> emit,
   ) async {
     try {
-      final users = await firestoreService.getUsers();
+      final user = authService.currentUser;
+      final Family family = await firestoreService.getFamily(userId: user!.uid);
+      final users =
+          await firestoreService.getMembersFamily(familyId: family.id);
       if (state is TasksLoadedState) {
         final currentState = state as TasksLoadedState;
         emit(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../domain/repository/auth_service.dart';
+import '../../../domain/service/auth_service.dart';
 import 'bloc/main_bloc.dart';
 
 class MainScreen extends StatelessWidget {
@@ -130,20 +130,34 @@ class _ColumnForVerificationUser extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 100),
-          _StyleTextButton(
-            text: 'Задачи для меня',
-            function: () => Navigator.of(context).pushNamed('/Tasks'),
-          ),
-          const SizedBox(height: 20),
-          _StyleTextButton(
-            text: 'Настройки профиля',
-            function: () => Navigator.of(context).pushNamed('/options'),
-          ),
-          const SizedBox(height: 20),
-          _StyleTextButton(
-            color: Colors.red,
-            function: () => context.read<MainBloc>().add(SignOutEvent()),
-            text: 'Выйти',
+          Column(
+            children: [
+              _StyleTextButton(
+                text: 'Задачи для меня',
+                function: () => Navigator.of(context).pushNamed('/Tasks'),
+              ),
+              const SizedBox(height: 20),
+              _StyleTextButton(
+                text: 'Список продуктов',
+                function: () => Navigator.of(context).pushNamed('/products'),
+              ),
+              const SizedBox(height: 20),
+              _StyleTextButton(
+                text: 'Семья',
+                function: () => Navigator.of(context).pushNamed('/family'),
+              ),
+              const SizedBox(height: 20),
+              _StyleTextButton(
+                text: 'Настройки профиля',
+                function: () => Navigator.of(context).pushNamed('/options'),
+              ),
+              const SizedBox(height: 20),
+              _StyleTextButton(
+                color: Colors.red,
+                function: () => context.read<MainBloc>().add(SignOutEvent()),
+                text: 'Выйти',
+              ),
+            ],
           ),
         ],
       ),

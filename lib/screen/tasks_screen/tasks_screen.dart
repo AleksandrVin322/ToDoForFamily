@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../domain/repository/auth_service.dart';
-import '../../domain/repository/firestore_service.dart';
+import '../../domain/service/auth_service.dart';
+import '../../domain/service/firestore_service.dart';
 import '../../entity/user_bd.dart';
 import 'bloc/tasks_bloc.dart';
 import 'tasks_with_status.dart';

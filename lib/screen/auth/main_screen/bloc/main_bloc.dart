@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
 
-import '../../../domain/repository/auth_service.dart';
+import '../../../../domain/service/auth_service.dart';
 
 part 'main_event.dart';
 part 'main_state.dart';

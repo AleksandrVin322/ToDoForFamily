@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../widgets/text_button_style.dart';
-import '../../widgets/text_field_style.dart';
+import '../../../widgets/text_button_style.dart';
+import '../../../widgets/text_field_style.dart';
+import '../../loading_screen/loading_screen.dart';
 import '../auth_flow_screen/bloc/auth_flow_bloc.dart';
-import '../loading_screen/loading_screen.dart';
 import 'bloc/column_register_bloc.dart';
 
 class ColumnRegister extends StatefulWidget {

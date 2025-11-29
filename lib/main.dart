@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:to_do_for_family/my_app.dart';
 
-import 'domain/repository/auth_service.dart';
-import 'domain/repository/firestore_service.dart';
+import 'domain/service/auth_service.dart';
+import 'domain/service/firestore_service.dart';
 import 'firebase_options.dart';
 
 void main() async {

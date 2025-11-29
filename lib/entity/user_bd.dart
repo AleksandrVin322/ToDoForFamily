@@ -4,15 +4,26 @@ class UserBD {
   final String id;
   final String email;
   final String name;
+  final DocumentReference? family;
 
-  const UserBD({required this.id, required this.email, required this.name});
+  const UserBD({
+    required this.id,
+    required this.email,
+    required this.name,
+    this.family,
+  });
 
   factory UserBD.fromFirestore(
-    DocumentSnapshot<Map<String, dynamic>> snapshot,
+    DocumentSnapshot<Map<String, dynamic>> doc,
     SnapshotOptions? options,
   ) {
-    final data = snapshot.data();
-    return UserBD(id: snapshot.id, email: data?['email'], name: data?['name']);
+    final data = doc.data();
+    return UserBD(
+      id: doc.id,
+      email: data?['email'],
+      name: data?['name'],
+      family: data?['family'],
+    );
   }
 
   Map<String, dynamic> toFirestore() {
@@ -20,6 +31,7 @@ class UserBD {
       "id": id,
       "email": email,
       "name": name,
+      "family": family,
     };
   }
 
