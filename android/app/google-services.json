@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "757570194846",
+    "project_id": "todoforfamily-21a7e",
+    "storage_bucket": "todoforfamily-21a7e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:757570194846:android:1d1b3897a8a3ad80041a8f",
+        "android_client_info": {
+          "package_name": "com.example.to_do_for_family"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDaYjoXWsx4bYFGwAwQLVAbXlLs-apIm_o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
