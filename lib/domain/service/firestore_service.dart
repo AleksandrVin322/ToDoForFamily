@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../../entity/family.dart';
-import '../../entity/product.dart';
 import '../../entity/task.dart';
 import '../../entity/user_bd.dart';
 
@@ -245,35 +244,5 @@ class FirestoreService {
       'family': _firebaseFirestore.collection('families').doc(docRefFamily.id),
     });
     await familyMembersDocRef.set({'docRef': userDocRef});
-  }
-
-  Stream<List<Product>> getProducts({required String familiesId}) {
-    return _firebaseFirestore
-        .collection('families/$familiesId/products')
-        .snapshots()
-        .map(
-          (snapshot) =>
-              snapshot.docs.map((doc) => Product.fromFirestore(doc)).toList(),
-        );
-  }
-
-  Future<void> addProduct({
-    required String familiesId,
-    required bool isBuy,
-    required String name,
-  }) async {
-    final collection =
-        _firebaseFirestore.collection('families/$familiesId/products');
-    await collection.add({'id': collection.id, 'isBuy': isBuy, 'name': name});
-  }
-
-  Future<void> switchIsBuyFromProduct({
-    required String familiesId,
-    required String idDoc,
-    required bool isBuy,
-  }) async {
-    final collection =
-        _firebaseFirestore.collection('families/$familiesId/products');
-    collection.doc(idDoc).update({'isBuy': isBuy});
   }
 }
